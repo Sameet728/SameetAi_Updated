@@ -177,7 +177,7 @@ function App() {
             <div className="chat chat-end">
               <div className="chat-image avatar">
                 <div className="w-10 rounded-full">
-                  <img alt="User avatar" src="/src/assets/user.jpg" />
+                  <img alt="User avatar" src="https://res.cloudinary.com/drp3ojnl0/image/upload/v1737392823/user_bbodxb.jpg" />
                 </div>
               </div>
               <div className="chat-header">
@@ -189,7 +189,7 @@ function App() {
             <div className="chat chat-start">
               <div className="chat-image avatar">
                 <div className="w-10 rounded-full">
-                  <img alt="AI avatar" src="/src/assets/logo.webp" />
+                  <img alt="AI avatar" src="https://res.cloudinary.com/drp3ojnl0/image/upload/v1737392823/logo_t5hvol.webp" />
                 </div>
               </div>
               <div className="chat-header">
