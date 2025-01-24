@@ -6,43 +6,56 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const Navbar = () => {
-  const [storedUser,setstoredUser]=useState(0);
+  const [storedUser, setstoredUser] = useState(0);
+  const [backready, SetBackready] = useState(1);
   const isUserExists = () => {
-   if(localStorage.getItem("user")){
-    setstoredUser(1);
-   }
-   else{
-    setstoredUser(0);
-   }
-   
+    if (localStorage.getItem("user")) {
+      setstoredUser(1);
+    }
+    else {
+      setstoredUser(0);
+    }
+
   };
-useEffect(()=>{
- isUserExists();
- console.log(storedUser)
-},[])  
-const logoutHandler = async () => {
-  try {
-    // Call the API to handle server-side logout (optional)
-    await axios.post("https://sameetai-backend.onrender.com/api/auth/logout");
+  useEffect(() => {
+    isUserExists();
+    backendChecker();
+    console.log(storedUser)
+  }, [])
+  const logoutHandler = async () => {
+    try {
+      // Call the API to handle server-side logout (optional)
+      await axios.post("https://sameetai-backend.onrender.com/api/auth/logout");
 
-    // Clear user data from localStorage
-    localStorage.removeItem("user");
-    localStorage.removeItem("chats");
+      // Clear user data from localStorage
+      localStorage.removeItem("user");
+      localStorage.removeItem("chats");
 
-    // Show success toast notification
-    toast.success("Logged out successfully!");
+      // Show success toast notification
+      toast.success("Logged out successfully!");
 
-    // Redirect to login page
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 1000); // Delay to allow the toast to display before redirecting
+      // Redirect to login page
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1000); // Delay to allow the toast to display before redirecting
 
-    console.log("User has been logged out.");
-  } catch (error) {
-    console.error("Error logging out:", error);
-    toast.error("Failed to log out. Please try again.");
-  }
-};
+      console.log("User has been logged out.");
+    } catch (error) {
+      console.error("Error logging out:", error);
+      toast.error("Failed to log out. Please try again.");
+    }
+  };
+  const backendChecker = async () => {
+    try {
+      let response = await axios.get("https://sameetai-backend.onrender.com");
+      let msg = response.data;
+      console.log(msg);
+      SetBackready(!backready);
+    } catch (error) {
+      console.error("Error logging out:", error);
+      toast.error("Backend Failed . Please try again.");
+    }
+  };
 
 
   return (
@@ -56,6 +69,8 @@ const logoutHandler = async () => {
 
       {/* Menu for larger screens */}
       <div className="hidden md:flex space-x-4">
+
+
         <a className="btn btn-ghost" href="/home">Home</a>
         <a className="btn btn-ghost" href="/about">About</a>
         <a className="btn btn-ghost" href="/services">Services</a>
@@ -64,9 +79,13 @@ const logoutHandler = async () => {
 
       {/* Profile Picture */}
       <div className="flex items-center space-x-4">
+        <span className={` cursor-pointer loading loading-ring loading-lg ${backready ? "bg-red-500" : "bg-green-400"
+          }`}
+        ></span>
         <div className="dropdown dropdown-end">
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <div className="w-10 rounded-full">
+
               <img
                 src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                 alt="Profile"
@@ -77,34 +96,35 @@ const logoutHandler = async () => {
             tabIndex={0}
             className="menu dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
-           {storedUser ?(<li><a href="/profile">Profile</a></li>) : ("")} 
-           {!storedUser ?(<li><a  onClick={()=>document.getElementById('my_modal_22').showModal()}>Login</a></li>) : ("")} 
-            
-            <dialog id="my_modal_22" className="modal">
-<div className="modal-box">
- <Login/>
- 
- </div>
-</dialog>
-{!storedUser ?( <li><a  onClick={()=>document.getElementById('my_modal_2').showModal()}>Signup</a></li>) : ("")}
-           
-           {/* Open the modal using document.getElementById('ID').showModal() method */}
+            {storedUser ? (<li><a href="/profile">Profile</a></li>) : ("")}
+            {!storedUser ? (<li><a onClick={() => document.getElementById('my_modal_22').showModal()}>Login</a></li>) : ("")}
 
-<dialog id="my_modal_2" className="modal">
-<div className="modal-box">
- <Signup/>
- 
- </div>
-</dialog>
-{storedUser ?( <li><a href="/settings">Settings</a></li>) : ("")} 
-{storedUser ?(<li><a onClick={logoutHandler}>Logout</a></li>) : ("")} 
-           
-            
+            <dialog id="my_modal_22" className="modal">
+              <div className="modal-box">
+                <Login />
+
+              </div>
+            </dialog>
+            {!storedUser ? (<li><a onClick={() => document.getElementById('my_modal_2').showModal()}>Signup</a></li>) : ("")}
+
+            {/* Open the modal using document.getElementById('ID').showModal() method */}
+
+            <dialog id="my_modal_2" className="modal">
+              <div className="modal-box">
+                <Signup />
+
+              </div>
+            </dialog>
+            {storedUser ? (<li><a href="/settings">Settings</a></li>) : ("")}
+            {storedUser ? (<li><a onClick={logoutHandler}>Logout</a></li>) : ("")}
+
+
           </ul>
         </div>
 
         {/* Hamburger Menu for smaller screens */}
         <div className="dropdown dropdown-end md:hidden">
+
           <label tabIndex={0} className="btn btn-ghost">
             <FaBars size={20} />
           </label>
